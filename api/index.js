@@ -114,12 +114,13 @@ const photosMiddleware = multer({ dest: 'uploads' });
 app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
     const uploadedFiles = [];
     for (let i = 0; i < req.files.length; i++) {
+        console.log(req)
         const { path, originalname } = req.files[i];
         const parts = originalname.split('.');
         const ext = parts[parts.length - 1];
         const newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
-        const newstr = newPath.slice(9, newPath.length + 1)
+        const newstr = newPath.slice(25, newPath.length + 1)
+        fs.renameSync(path, newstr);
         console.log(newstr);
         uploadedFiles.push(newstr);
     }
@@ -129,21 +130,21 @@ app.post('/upload', photosMiddleware.array('photos', 100), (req, res) => {
 app.post('/places', (req, res) => {
     const { title, address, addedPhotos,
         description, perks, extraInfo,
-        checkIn, checkOut, guests } = req.body;
+        checkIn, checkOut, guests,price } = req.body;
     const { token } = req.cookies;
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
         await Place.create({
             owner: userData.id, title, address, photos:addedPhotos,
             description, perks,
-            extraInfo, checkIn, checkOut, guests,
+            extraInfo, checkIn, checkOut, guests, price,
         })
     });
 
 
 })
 
-app.get('/places', async (req, res) => {
+app.get('/user_places', async (req, res) => {
     const { token } = req.cookies;
 
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -167,18 +168,30 @@ app.put('/places', async (req, res) => {
         const {token}=req.cookies
         const { id, title, address, addedPhotos,
             description, perks, extraInfo,
-            checkIn, checkOut, guests } = req.body;
+            checkIn, checkOut, guests,price } = req.body;
         jwt.verify(token,jwtSecret,{},async (err,userData)=>{
             const placeDoc=await Place.findById(id);
             if(userData.id===placeDoc.owner.toString()){
                 const updatedPlace=await Place.findByIdAndUpdate(id,{title, address,photos: addedPhotos,
                         description, perks, extraInfo,
-                        checkIn, checkOut, guests},{new:true});
+                        checkIn, checkOut, guests,price},{new:true});
     
             }
         })
     } catch (error) {
-        
+        res.json(error.message)
+    }
+})
+
+app.get('/places',async (req,res)=>{
+    try{
+        const places=await Place.find();
+        if(!places){
+            res.json({message:"No place found"})
+        }
+        res.json(places);
+    }catch(e){
+        res.json(e.message)
     }
 })
 

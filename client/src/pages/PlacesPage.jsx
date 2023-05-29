@@ -9,7 +9,7 @@ const PlacesPage = () => {
 
 
     useEffect(() => {
-        const result =axios.get('/places')
+        const result =axios.get('/user_places')
             .then(({ data }) => {
                 setPlaces(data);
                 console.log(data)

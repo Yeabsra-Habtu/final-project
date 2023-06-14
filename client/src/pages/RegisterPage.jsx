@@ -10,11 +10,12 @@ const RegisterPage = () => {
     const registerHandler= async (e)=>{
         e.preventDefault();
         try {
-            await axios.post('/register', {
+            const userDoc=await axios.post('/register', {
                 name,
                 email,
                 password,
             })
+            console.log(userDoc)
         } catch (e) {
             alert('Resgistration unsuccess')
             console.log(e);

@@ -33,6 +33,7 @@ console.log(process.env.MONGO_URL)
 
 app.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
+    
     try {
         const userDoc = await User.create({
             name,

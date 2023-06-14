@@ -15,7 +15,7 @@ const PlacesFormPage = ({addedPhotoss,onChange}) => {
     const [extraInfo, setExtraInfo] = useState('');
     const [checkIn, setCheckIn] = useState();
     const [checkOut, setCheckOut] = useState();
-    const [guests, setGuests] = useState('');
+    const [guests, setGuests] = useState();
     const [price,setPrice]=useState(100);
     const [redirect, setRedirect] = useState(false);
 
@@ -175,7 +175,7 @@ const PlacesFormPage = ({addedPhotoss,onChange}) => {
                     <div>
                         <h3 className='mt-2 -mb-1'>Maximum no of guests</h3>
                         <input
-                            type='text'
+                            type='number'
                             value={guests}
                             onChange={ev => setGuests(ev.target.value)}
                         />
